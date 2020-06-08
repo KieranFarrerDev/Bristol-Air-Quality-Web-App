@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <title>Charts visualisation</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_3qHpRl2EXS38C7p5lIWWmoHf_t4XOHs&libraries=visualization"></script>
+      <script>google.charts.load('current', {'packages':['corechart','map'],"mapsApiKey": "AIzaSyD_3qHpRl2EXS38C7p5lIWWmoHf_t4XOHs"});</script>
+      <style>
+         #legend {
+         padding: 5px;
+         margin: 5px;
+         }
+         #legend h3 {
+         margin-top: 0;
+         }
+         #legend img {
+         vertical-align: middle;
+         }
+      </style>
+   </head>
+   <body>
+      <br /><br />
+      <div class="container">
+         <h3 align="center">UFCFR5-15-3 Charts Visualisation</h3>
+         <br />
+         <div class="panel panel-default">
+            <div class="panel-heading">
+               <div class="row">
+                  <div class="col-md-9">
+                     <h3 class="panel-title">Nitrogen Monoxide (nO) readings at 18:00 averaged by month for year 2018</h3>
+                  </div>
+                  <div class="col-md-3">
+                  </div>
+               </div>
+            </div>
+            <div class="panel-body">
+               <div id="scatter_chart_area"  style="width: 100%; height: 480px;"></div>
+            </div>
+         </div>
+         <div class="panel panel-default">
+            <div class="panel-heading">
+               <div class="row">
+                  <div class="col-md-9">
+                     <h3 class="panel-title">User selected Station & Pollutants over a 24hour period (Jan 2015-Dec 2019)</h3>
+                  </div>
+                  <div class="col-md-3">
+                     <select name= "station" id="stationDrop">
+                        <option value="" selected disabled>Select Station</option>
+                        <option value="203">Brislington Depot</option>
+                        <option value="206">Rupert Street</option>
+                        <option value="215">Parson Street School</option>
+                        <option value="270">Wells Road</option>
+                        <option value="375">Newfoundland Police Station</option>
+                        <option value="452">AURN St Pauls</option>
+                        <option value="463">Fishponds Road</option>
+                        <option value="500">Temple Way</option>
+                        <option value="501">Colston Avenue</option>
+                     </select>
+                     <input type="text" name="date" class="input-text datepickerwidth required"
+                        id="txtstart_date" placeholder="Available Dates:"  readonly="readonly"/>
+                     <select name="pollutant" id="pollutantDrop">
+                        <option value="" selected disabled>Select Pollutant</option>
+                        <option value="n0">Nitrogen Monoxide (nO)</option>
+                        <option value="n02">Nitrogen Dioxide (nO2)</option>
+                        <option value="n0x">Nitrogen Oxide (nOx)</option>
+                        <option value="all"selected >All Pollutants (nO,nO2,nOx)</option>
+                     </select>
+                     </form>
+                  </div>
+               </div>
+            </div>
+            <div class="panel-body">
+               <div id='lineLoader' style="width: 100%; height: 480px;"><img src='loading.gif' width='32px' height='32px' align='right'></div>
+               <div id="line_chart_area" style="width: 100%; height: 480px;"></div>
+            </div>
+         </div>
+         <br /><br />
+         <h3 align="center">UFCFR5-15-3 Map Visualisation</h3>
+         <br />
+         <div class="panel panel-default">
+            <div class="panel-heading">
+               <div class="row">
+                  <div class="col-md-9">
+                     <h3 class="panel-title">Pollutant readings Mean value over a 12 month span for each station (2015-2019)</h3>
+                  </div>
+                  <div class="col-md-3">
+                    <div id = "loadDataForYear">
+                    Load Data For Year:
+                     <select name= "yearMap" id = "yearDropMap">
+                        <option value="15">2015</option>
+                        <option value="16">2016</option>
+                        <option value="17">2017</option>
+                        <option value="18">2018</option>
+                        <option value="19" selected>2019</option>
+                     </select>
+                   </div>
+                     <select name="pollutantMap" id="pollutantDropMap">
+                        <option value="all"selected >All Pollutants Combined (µg/m³)</option>
+                        <option value=""  disabled>Individual Pollutant Selection</option>
+                        <option value="n0">Nitrogen Monoxide nO (µg/m³)</option>
+                        <option value="n02">Nitrogen Dioxide nO2 (µg/m³)</option>
+                        <option value="n0x">Nitrogen Oxide nOx (µg/m³)</option>
+                     </select>
+                     <select name= "timeMap" id="timeDropMap">
+                        <option value="24Hour"selected>Average for Full Day</option>
+                        <option disabled="">Individual Hour Selection</option>
+                        <option value="0">Average at 00:00</option>
+                        <option value="7">Average at 07:00</option>
+                        <option value="14">Average at 14:00</option>
+                        <option value="21">Average at 21:00</option>
+                     </select>
+                  </div>
+               </div>
+            </div>
+            <div class="panel-body">
+              <div id='mapLoader' style="width: 100%; height: 480px;"><img src='loading.gif' width='32px' height='32px' align='right'></div>
+              <div id="map" style="width: 100%; height: 480px;"></div>
+               <div id="legend">
+                  <h4>DEFRA  colour Index for Ozone: Based on the running 8-hourly mean (µg/m³)</h4>
+
+                  <table border="0" cellpadding="2" cellspacing="0" style="border-left: 1px solid rgb(51, 51, 51); border-top: 1px solid rgb(51, 51, 51); margin: 1em 0px; padding: 0px; border-right-style: initial; border-bottom-style: initial; border-right-color: initial; border-bottom-color: initial; border-image: url('') initial; font-weight: normal; font-style: normal; font-size: 12.8px; vertical-align: baseline; border-collapse: separate; border-spacing: 0px; color: rgb(0, 0, 0); font-family: verdana, geneva, sans-serif; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); border-right-width: 0px; border-bottom-width: 0px;" width="100%">
+                     <tbody style="margin: 0px; padding: 0px; border: 0px; font-weight: inherit; font-style: inherit; font-size: 12.8px; vertical-align: baseline;">
+                        <tr style="margin: 0px; padding: 0px; border: 0px; font-weight: inherit; font-style: inherit; font-size: 12.8px; vertical-align: baseline;">
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);" width="80">
+                              Index
+                           </th>
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              1
+                           </th>
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              2
+                           </th>
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              3
+                           </th>
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              4
+                           </th>
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              5
+                           </th>
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              6
+                           </th>
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              7
+                           </th>
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              8
+                           </th>
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              9
+                           </th>
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              10
+                           </th>
+                        </tr>
+                        <tr style="margin: 0px; padding: 0px; border: 0px; font-weight: inherit; font-style: inherit; font-size: 12.8px; vertical-align: baseline;">
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              Band
+                           </th>
+                           <td class="bg_low1" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(0, 0, 0); background-color: rgb(156, 255, 156); border-left-width: 0px; border-top-width: 0px;">
+                              Low
+                           </td>
+                           <td class="bg_low2" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(0, 0, 0); background-color: rgb(49, 255, 0); border-left-width: 0px; border-top-width: 0px;">
+                              Low
+                           </td>
+                           <td class="bg_low3" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(34, 34, 34); background-color: rgb(49, 207, 0); border-left-width: 0px; border-top-width: 0px;">
+                              Low
+                           </td>
+                           <td class="bg_moderate4" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(0, 0, 0); background-color: rgb(255, 255, 0); border-left-width: 0px; border-top-width: 0px;">
+                              Moderate
+                           </td>
+                           <td class="bg_moderate5" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(0, 0, 0); background-color: rgb(255, 207, 0); border-left-width: 0px; border-top-width: 0px;">
+                              Moderate
+                           </td>
+                           <td class="bg_moderate6" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(34, 34, 34); background-color: rgb(255, 154, 0); border-left-width: 0px; border-top-width: 0px;">
+                              Moderate
+                           </td>
+                           <td class="bg_high7" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(0, 0, 0); background-color: rgb(255, 100, 100); border-left-width: 0px; border-top-width: 0px;">
+                              High
+                           </td>
+                           <td class="bg_high8" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(255, 255, 255); background-color: rgb(255, 0, 0); border-left-width: 0px; border-top-width: 0px;">
+                              High
+                           </td>
+                           <td class="bg_high9" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(255, 255, 255); background-color: rgb(153, 0, 0); border-left-width: 0px; border-top-width: 0px;">
+                              High
+                           </td>
+                           <td class="bg_very_high10" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(255, 255, 255); background-color: rgb(206, 48, 255); border-left-width: 0px; border-top-width: 0px;">
+                              Very High
+                           </td>
+                        </tr>
+                        <tr style="margin: 0px; padding: 0px; border: 0px; font-weight: inherit; font-style: inherit; font-size: 12.8px; vertical-align: baseline;">
+                           <th style="margin: 0px; padding: 3px; border: 0px; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; background-color: rgb(1, 53, 103); color: rgb(255, 255, 255);">
+                              µg/m³
+                           </th>
+                           <td class="bg_low1" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(0, 0, 0); background-color: rgb(156, 255, 156); border-left-width: 0px; border-top-width: 0px;">
+                              0-33
+                           </td>
+                           <td class="bg_low2" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(0, 0, 0); background-color: rgb(49, 255, 0); border-left-width: 0px; border-top-width: 0px;">
+                              34-66
+                           </td>
+                           <td class="bg_low3" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(34, 34, 34); background-color: rgb(49, 207, 0); border-left-width: 0px; border-top-width: 0px;">
+                              67-100
+                           </td>
+                           <td class="bg_moderate4" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(0, 0, 0); background-color: rgb(255, 255, 0); border-left-width: 0px; border-top-width: 0px;">
+                              101-120
+                           </td>
+                           <td class="bg_moderate5" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(0, 0, 0); background-color: rgb(255, 207, 0); border-left-width: 0px; border-top-width: 0px;">
+                              121-140
+                           </td>
+                           <td class="bg_moderate6" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(34, 34, 34); background-color: rgb(255, 154, 0); border-left-width: 0px; border-top-width: 0px;">
+                              141-160
+                           </td>
+                           <td class="bg_high7" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(0, 0, 0); background-color: rgb(255, 100, 100); border-left-width: 0px; border-top-width: 0px;">
+                              161-187
+                           </td>
+                           <td class="bg_high8" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(255, 255, 255); background-color: rgb(255, 0, 0); border-left-width: 0px; border-top-width: 0px;">
+                              188-213
+                           </td>
+                           <td class="bg_high9" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(255, 255, 255); background-color: rgb(153, 0, 0); border-left-width: 0px; border-top-width: 0px;">
+                              214-240
+                           </td>
+                           <td class="bg_very_high10" style="border-right: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(51, 51, 51); margin: 0px; padding: 2px 4px; border-top-style: initial; border-left-style: initial; border-top-color: initial; border-left-color: initial; border-image: url('') initial; font-weight: bold; font-style: inherit; font-size: 12.8px; vertical-align: top; text-align: left; line-height: normal; color: rgb(255, 255, 255); background-color: rgb(206, 48, 255); border-left-width: 0px; border-top-width: 0px;">
+                              241 or more
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+                 <h5 id = "circleLegend" >Radius of each station's circle = √(Stations Average reading Per Hour * 100)</h5>
+            </div>
+         </div>
+      </div>
+       <br/>
+   </body>
+</html>
+<script src ="scatter-chart.js"></script>
+<script src ="line-chart.js"></script>
+<script src ="map.js"></script>
